@@ -3,12 +3,17 @@ import random
 from utils import actions
 import os
 import glob
+import logging
+import logging.config
+
+logging.config.fileConfig('logging.conf')
+logger = logging.getLogger('main')
 
 try:
     cookie_del = glob.glob("config/*cookie.json")
     os.remove(cookie_del[0])
 except Exception as e:
-    print(f"Erro ao excluir cookies {e}")
+    logger.error(f"Erro ao excluir cookies {e}")
 
 bot = Bot()
 
@@ -16,6 +21,7 @@ bot = Bot()
 bot.delays["follow"] = random.randint(200, 400)
 bot.max_follows_per_day = 200
 bot.max_unfollows_per_day = 200
+bot.logger.setLevel("ERROR")
 
 bot.login(username=os.environ['username'], password=os.environ['password'])
 contas_desejadas = ["eusoupaulinholima", "rodrigocohenoficial", "canal.contareal"]
@@ -23,9 +29,9 @@ contas_desejadas = ["eusoupaulinholima", "rodrigocohenoficial", "canal.contareal
 
 def verificar_sucesso_acoes(verificador, nome_acao, counter):
     if verificador:
-        print(f"Ação {nome_acao} finalizada com sucesso pela {counter}ª vez.")
+        logger.info(f"Ação {nome_acao} finalizada com sucesso pela {counter}ª vez.")
     else:
-        print(f"Ação {nome_acao} finalizada com erro na {counter}ª vez.")
+        logger.error(f"Ação {nome_acao} finalizada com erro na {counter}ª vez.")
 
 
 counter = 1
@@ -39,6 +45,6 @@ while True:
         keep_unfollowing = actions.unfollow(bot)
         verificar_sucesso_acoes(keep_unfollowing, "UNFOLLOW", counter)
     if not keep_following and not keep_unfollowing:
-        print("Algo deu errado. Parando o robô.")
+        logger.error("Algo deu errado. Parando o robô.")
         break
     counter += 1

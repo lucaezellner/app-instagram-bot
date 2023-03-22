@@ -1,6 +1,10 @@
 import sqlite3
 from datetime import datetime
+import logging
+import logging.config
 
+logging.config.fileConfig('logging.conf')
+logger = logging.getLogger('main')
 
 def executar_query(query):
     try:
@@ -10,7 +14,7 @@ def executar_query(query):
         cursor.close()
         con.close()
     except Exception as e:
-        print(f"Erro ao executar a query {query}: {e}.")
+        logger.error(f"Erro ao executar a query {query}: {e}.")
         cursor.close()
         con.close()
 
@@ -29,7 +33,7 @@ def insert_user(user_id, user_name, ultima_atualizacao, status):
         cursor.close()
         con.close()
     except Exception as e:
-        print(f"Erro ao executar a query {sql}: {e}.")
+        logger.error(f"Erro ao executar a query {sql}: {e}.")
         cursor.close()
         con.close()
 
@@ -48,7 +52,7 @@ def insert_many_users(list_users):
         cursor.close()
         con.close()
     except Exception as e:
-        print(f"Erro ao executar a query {sql}: {e}.")
+        logger.error(f"Erro ao executar a query {sql}: {e}.")
         cursor.close()
         con.close()
 
@@ -70,7 +74,7 @@ def update_user_status(user, novo_status):
         cursor.close()
         con.close()
     except Exception as e:
-        print(f"Erro ao executar a query {sql}: {e}.")
+        logger.error(f"Erro ao executar a query {sql}: {e}.")
         cursor.close()
         con.close()
 
@@ -89,7 +93,7 @@ def insert_many_status(list_status):
         cursor.close()
         con.close()
     except Exception as e:
-        print(f"Erro ao executar a query {sql}: {e}.")
+        logger.error(f"Erro ao executar a query {sql}: {e}.")
         cursor.close()
         con.close()
 
@@ -105,6 +109,6 @@ def executar_select(sql):
         con.close()
         return ret
     except Exception as e:
-        print(f"Erro ao executar a query {sql}: {e}.")
+        logger.error(f"Erro ao executar a query {sql}: {e}.")
         cursor.close()
         con.close()
