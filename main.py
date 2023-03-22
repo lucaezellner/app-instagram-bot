@@ -13,7 +13,7 @@ except Exception as e:
 bot = Bot()
 
 # Sobrescrevendo configurações do robô
-bot.delays["follow"] = random.randint(150, 400)
+bot.delays["follow"] = random.randint(200, 400)
 bot.max_follows_per_day = 200
 bot.max_unfollows_per_day = 200
 
@@ -21,16 +21,24 @@ bot.login(username=os.environ['username'], password=os.environ['password'])
 contas_desejadas = ["eusoupaulinholima", "rodrigocohenoficial", "canal.contareal"]
 
 
+def verificar_sucesso_acoes(verificador, nome_acao, counter):
+    if verificador:
+        print(f"Ação {nome_acao} finalizada com sucesso pela {counter}ª vez.")
+    else:
+        print(f"Ação {nome_acao} finalizada com erro na {counter}ª vez.")
+
+
 counter = 1
 keep_following = True
 keep_unfollowing = True
 while True:
     if keep_following:
-        keep_following = actions.follow(bot, contas_desejadas, counter)
+        keep_following = actions.follow(bot, contas_desejadas)
+        verificar_sucesso_acoes(keep_following, "FOLLOW", counter)
     if keep_unfollowing:
-        keep_unfollowing = actions.unfollow(bot, counter)
+        keep_unfollowing = actions.unfollow(bot)
+        verificar_sucesso_acoes(keep_unfollowing, "UNFOLLOW", counter)
     if not keep_following and not keep_unfollowing:
         print("Algo deu errado. Parando o robô.")
         break
     counter += 1
-
