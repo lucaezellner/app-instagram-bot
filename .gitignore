@@ -2,3 +2,4 @@
 venv
 config
 followers.db
+__pycache__
