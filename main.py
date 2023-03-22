@@ -1,5 +1,4 @@
-from instabot import Bot
-import random
+from utils.bot_config import InstagramBot
 from utils import actions
 import os
 import glob
@@ -15,13 +14,7 @@ try:
 except Exception as e:
     logger.error(f"Erro ao excluir cookies {e}")
 
-bot = Bot()
-
-# Sobrescrevendo configurações do robô
-bot.delays["follow"] = random.randint(200, 400)
-bot.max_follows_per_day = 200
-bot.max_unfollows_per_day = 200
-bot.logger.setLevel("ERROR")
+bot = InstagramBot()
 
 bot.login(username=os.environ['username'], password=os.environ['password'])
 contas_desejadas = ["eusoupaulinholima", "rodrigocohenoficial", "canal.contareal"]
@@ -29,9 +22,9 @@ contas_desejadas = ["eusoupaulinholima", "rodrigocohenoficial", "canal.contareal
 
 def verificar_sucesso_acoes(verificador, nome_acao, counter):
     if verificador:
-        logger.info(f"Ação {nome_acao} finalizada com sucesso pela {counter}ª vez.")
+        logger.warning(f"---> Ação {nome_acao} finalizada com sucesso pela {counter}ª vez.")
     else:
-        logger.error(f"Ação {nome_acao} finalizada com erro na {counter}ª vez.")
+        logger.critical(f"---> Ação {nome_acao} finalizada com erro na {counter}ª vez.")
 
 
 counter = 1
@@ -45,6 +38,6 @@ while True:
         keep_unfollowing = actions.unfollow(bot)
         verificar_sucesso_acoes(keep_unfollowing, "UNFOLLOW", counter)
     if not keep_following and not keep_unfollowing:
-        logger.error("Algo deu errado. Parando o robô.")
+        logger.critical("Algo deu errado. Parando o robô.")
         break
     counter += 1
