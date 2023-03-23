@@ -43,7 +43,7 @@ def buscar_usuarios_pendentes_para_deixar_de_seguir():
 
 def follow(bot, contas_desejadas):
     try:
-        logger.warning("Iniciando ação FOLLOW")
+        logger.info("Iniciando ação FOLLOW")
         pendentes = buscar_usuarios_pendentes_para_seguir()
         logger.info(f"Tamanho total da lista de pendentes para seguir: {len(pendentes)}")
         if len(pendentes) > 0:
@@ -53,7 +53,7 @@ def follow(bot, contas_desejadas):
             if not sucesso:
                 logger.error("Algo deu errado. Parando o processo.")
                 return False
-            logger.info(f"Seguidor {seguidor_escolhido[1]} seguido com sucesso!")
+            logger.warning(f"Seguidor {seguidor_escolhido[1]} seguido com sucesso!")
             db_followers.update_user_status(seguidor_escolhido[0], 2)
             return True
         else:
@@ -67,7 +67,7 @@ def follow(bot, contas_desejadas):
 
 def unfollow(bot):
     try:
-        logger.warning("Iniciando ação UNFOLLOW")
+        logger.info("Iniciando ação UNFOLLOW")
         pendentes = buscar_usuarios_pendentes_para_deixar_de_seguir()
         logger.info(f"Tamanho total da lista de pendentes para deixar de seguir: {len(pendentes)}")
         if len(pendentes) > 0:
@@ -77,7 +77,7 @@ def unfollow(bot):
             if not sucesso:
                 logger.error("Algo deu errado. Parando o processo.")
                 return False
-            logger.info(f"Seguidor {seguidor_escolhido[1]} deixado de ser seguido com sucesso!")
+            logger.warning(f"Seguidor {seguidor_escolhido[1]} deixado de ser seguido com sucesso!")
             db_followers.update_user_status(seguidor_escolhido[0], 3)
             return True
     except Exception as e:
