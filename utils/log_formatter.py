@@ -22,7 +22,7 @@ class CustomFormatter(logging.Formatter):
             logging.FOLLOW: self.green + self.fmt + self.reset,
             logging.UNFOLLOW: self.blue + self.fmt + self.reset,
             logging.WARNING: self.yellow + self.fmt + self.reset,
-            logging.ERROR: self.magenta + self.fmt + self.reset,
+            logging.ERROR: self.red + self.fmt + self.reset,
             logging.CRITICAL: self.red + self.fmt + self.reset
         }
 
