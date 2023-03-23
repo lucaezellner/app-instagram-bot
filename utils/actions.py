@@ -51,7 +51,8 @@ def follow(bot, contas_desejadas):
             logger.info(f"Seguindo seguidor: {seguidor_escolhido[1]}")
             sucesso = bot.follow(seguidor_escolhido[0])
             if not sucesso:
-                logger.error("Algo deu errado. Parando o processo.")
+                db_followers.update_user_status(seguidor_escolhido[0], 4)
+                logger.error(f"Erro no FOLLOW de {seguidor_escolhido[1]}. Status do seguidor alterado para ERROR.")
                 return False
             logger.warning(f"Seguidor {seguidor_escolhido[1]} seguido com sucesso!")
             db_followers.update_user_status(seguidor_escolhido[0], 2)
@@ -75,7 +76,8 @@ def unfollow(bot):
             logger.info(f"Deixando de seguir: {seguidor_escolhido[1]}. Havia sido seguido em {seguidor_escolhido[2]}")
             sucesso = bot.unfollow(seguidor_escolhido[0])
             if not sucesso:
-                logger.error("Algo deu errado. Parando o processo.")
+                db_followers.update_user_status(seguidor_escolhido[0], 2)
+                logger.error(f"Erro no UNFOLLOW de {seguidor_escolhido[1]}. Status do seguidor alterado para ERROR.")
                 return False
             logger.warning(f"Seguidor {seguidor_escolhido[1]} deixado de ser seguido com sucesso!")
             db_followers.update_user_status(seguidor_escolhido[0], 3)

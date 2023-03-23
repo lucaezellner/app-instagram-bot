@@ -22,7 +22,8 @@ drop_table_users = "drop table users;"
 status = [
             (1, "WAITING TO FOLLOW"),
             (2, "FOLLOWING"),
-            (3, "UNFOLLOWED")
+            (3, "UNFOLLOWED"),
+            (3, "ERROR")
          ]
 
 # list_users = []

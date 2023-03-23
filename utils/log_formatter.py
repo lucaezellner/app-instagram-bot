@@ -20,7 +20,7 @@ class CustomFormatter(logging.Formatter):
             logging.DEBUG: self.white + self.fmt + self.reset,
             logging.INFO: self.white + self.fmt + self.reset,
             logging.WARNING: self.green + self.fmt + self.reset,
-            logging.ERROR: self.white + self.fmt + self.reset,
+            logging.ERROR: self.magenta + self.fmt + self.reset,
             logging.CRITICAL: self.red + self.fmt + self.reset
         }
 
