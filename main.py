@@ -12,10 +12,10 @@ try:
 except Exception as e:
     logger.error(f"Erro ao excluir cookies {e}")
 
-bot = InstagramBot(200, 200)
+bot = InstagramBot(max_follows_per_day=200, max_unfollows_per_day=200)
 
 bot.login(username=os.environ['username'], password=os.environ['password'])
-contas_desejadas = ["eusoupaulinholima", "rodrigocohenoficial", "canal.contareal", "rafaelhaguiwara"]
+contas_desejadas = ["eusoupaulinholima", "rodrigocohenoficial", "rafaelhaguiwara"]
 
 
 def verificar_sucesso_acoes(verificador, nome_acao, counter):

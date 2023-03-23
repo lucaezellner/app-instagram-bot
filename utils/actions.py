@@ -71,7 +71,7 @@ def unfollow(bot):
         pendentes = buscar_usuarios_pendentes_para_deixar_de_seguir()
         logger.info(f"Tamanho total da lista de pendentes para deixar de seguir: {len(pendentes)}")
         if len(pendentes) > 0:
-            seguidor_escolhido = random.choice(pendentes)
+            seguidor_escolhido = pendentes[0]
             logger.info(f"Deixando de seguir: {seguidor_escolhido[1]}. Havia sido seguido em {seguidor_escolhido[2]}")
             sucesso = bot.unfollow(seguidor_escolhido[0])
             if not sucesso:
