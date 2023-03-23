@@ -10,16 +10,18 @@ class CustomFormatter(logging.Formatter):
     red = '\x1b[38;5;196m'
     bold_red = '\x1b[31;1m'
     magenta = '\x1b[35m'
+    # assim que seta RGB
+    white = '\x1b[38;2;255;255;255m'
     reset = '\x1b[0m'
 
     def __init__(self, fmt=None, datefmt=None, style='%', validate=True):
         super().__init__()
         self.fmt = fmt
         self.FORMATS = {
-            logging.DEBUG: self.reset + self.fmt + self.reset,
-            logging.INFO: self.reset + self.fmt + self.reset,
+            logging.DEBUG: self.white + self.fmt + self.reset,
+            logging.INFO: self.white + self.fmt + self.reset,
             logging.WARNING: self.blue + self.fmt + self.reset,
-            logging.ERROR: self.reset + self.fmt + self.reset,
+            logging.ERROR: self.white + self.fmt + self.reset,
             logging.CRITICAL: self.magenta + self.fmt + self.reset
         }
 

@@ -1,11 +1,9 @@
 from utils import db_followers
 from datetime import datetime
 import random
-import logging
-import logging.config
+from utils import log
 
-logging.config.fileConfig('logging.conf')
-logger = logging.getLogger('main')
+logger = log.get_logger()
 
 
 def inserir_pendentes_db(bot, contas_desejadas, qtd_seguidores_por_conta):

@@ -1,10 +1,9 @@
 import sqlite3
 from datetime import datetime
-import logging
-import logging.config
+from utils import log
 
-logging.config.fileConfig('logging.conf')
-logger = logging.getLogger('main')
+logger = log.get_logger()
+
 
 def executar_query(query):
     try:

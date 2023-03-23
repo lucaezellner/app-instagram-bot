@@ -2,11 +2,9 @@ from utils.bot_config import InstagramBot
 from utils import actions
 import os
 import glob
-import logging
-import logging.config
+from utils import log
 
-logging.config.fileConfig('logging.conf')
-logger = logging.getLogger('main')
+logger = log.get_logger()
 
 try:
     cookie_del = glob.glob("config/*cookie.json")
@@ -14,10 +12,10 @@ try:
 except Exception as e:
     logger.error(f"Erro ao excluir cookies {e}")
 
-bot = InstagramBot()
+bot = InstagramBot(200, 200)
 
 bot.login(username=os.environ['username'], password=os.environ['password'])
-contas_desejadas = ["eusoupaulinholima", "rodrigocohenoficial", "canal.contareal"]
+contas_desejadas = ["eusoupaulinholima", "rodrigocohenoficial", "canal.contareal", "rafaelhaguiwara"]
 
 
 def verificar_sucesso_acoes(verificador, nome_acao, counter):
