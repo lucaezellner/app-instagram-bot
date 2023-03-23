@@ -35,6 +35,7 @@ def buscar_usuarios_pendentes_para_deixar_de_seguir():
         SELECT USER_ID, USER_NAME
         FROM users WHERE STATUS = 2
         AND ULTIMA_ATUALIZACAO < DATE()
+        ORDER BY ULTIMA_ATUALIZACAO
     '''
     ret = db_followers.executar_select(sql)
     return ret
