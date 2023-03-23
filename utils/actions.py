@@ -32,7 +32,7 @@ def buscar_usuarios_pendentes_para_seguir():
 
 def buscar_usuarios_pendentes_para_deixar_de_seguir():
     sql = '''
-        SELECT USER_ID, USER_NAME
+        SELECT USER_ID, USER_NAME, ULTIMA_ATUALIZACAO
         FROM users WHERE STATUS = 2
         AND ULTIMA_ATUALIZACAO < DATE()
         ORDER BY ULTIMA_ATUALIZACAO
@@ -72,7 +72,7 @@ def unfollow(bot):
         logger.info(f"Tamanho total da lista de pendentes para deixar de seguir: {len(pendentes)}")
         if len(pendentes) > 0:
             seguidor_escolhido = random.choice(pendentes)
-            logger.info(f"Deixando de seguir: {seguidor_escolhido[1]}")
+            logger.info(f"Deixando de seguir: {seguidor_escolhido[1]}. Havia sido seguido em {seguidor_escolhido[2]}")
             sucesso = bot.unfollow(seguidor_escolhido[0])
             if not sucesso:
                 logger.error("Algo deu errado. Parando o processo.")
