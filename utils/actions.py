@@ -43,7 +43,7 @@ def buscar_usuarios_pendentes_para_deixar_de_seguir():
 
 def follow(bot, contas_desejadas):
     try:
-        logger.warning("---> Iniciando ação FOLLOW")
+        logger.warning("Iniciando ação FOLLOW")
         pendentes = buscar_usuarios_pendentes_para_seguir()
         logger.info(f"Tamanho total da lista de pendentes para seguir: {len(pendentes)}")
         if len(pendentes) > 0:
@@ -67,7 +67,7 @@ def follow(bot, contas_desejadas):
 
 def unfollow(bot):
     try:
-        logger.warning("---> Iniciando ação UNFOLLOW")
+        logger.warning("Iniciando ação UNFOLLOW")
         pendentes = buscar_usuarios_pendentes_para_deixar_de_seguir()
         logger.info(f"Tamanho total da lista de pendentes para deixar de seguir: {len(pendentes)}")
         if len(pendentes) > 0:

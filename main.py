@@ -20,9 +20,9 @@ contas_desejadas = ["eusoupaulinholima", "rodrigocohenoficial", "canal.contareal
 
 def verificar_sucesso_acoes(verificador, nome_acao, counter):
     if verificador:
-        logger.warning(f"---> Ação {nome_acao} finalizada com sucesso pela {counter}ª vez.")
+        logger.warning(f"Ação {nome_acao} finalizada com sucesso pela {counter}ª vez.")
     else:
-        logger.critical(f"---> Ação {nome_acao} finalizada com erro na {counter}ª vez.")
+        logger.critical(f"Ação {nome_acao} finalizada com erro na {counter}ª vez.")
 
 
 counter = 1
