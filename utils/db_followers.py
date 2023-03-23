@@ -2,7 +2,8 @@ import sqlite3
 from datetime import datetime
 from utils import log
 
-logger = log.get_logger()
+if __name__ == "__main__":
+    logger = log.get_logger()
 
 
 def executar_query(query):

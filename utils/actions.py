@@ -3,7 +3,8 @@ from datetime import datetime
 import random
 from utils import log
 
-logger = log.get_logger()
+if __name__ == "__main__":
+    logger = log.get_logger()
 
 
 def inserir_pendentes_db(bot, contas_desejadas, qtd_seguidores_por_conta):
@@ -54,7 +55,7 @@ def follow(bot, contas_desejadas):
                 db_followers.update_user_status(seguidor_escolhido[0], 4)
                 logger.error(f"Erro no FOLLOW de {seguidor_escolhido[1]}. Status do seguidor alterado para ERROR.")
                 return False
-            logger.warning(f"Seguidor {seguidor_escolhido[1]} seguido com sucesso!")
+            logger.follow(f"Seguidor {seguidor_escolhido[1]} seguido com sucesso!")
             db_followers.update_user_status(seguidor_escolhido[0], 2)
             return True
         else:
@@ -81,7 +82,7 @@ def unfollow(bot):
                 db_followers.update_user_status(seguidor_escolhido[0], 2)
                 logger.error(f"Erro no UNFOLLOW de {seguidor_escolhido[1]}. Status do seguidor alterado para ERROR.")
                 return False
-            logger.warning(f"Seguidor {seguidor_escolhido[1]} deixado de ser seguido com sucesso!")
+            logger.unfollow(f"Seguidor {seguidor_escolhido[1]} deixado de ser seguido com sucesso!")
             db_followers.update_user_status(seguidor_escolhido[0], 3)
             return True
         else:

@@ -4,6 +4,8 @@ import os
 import glob
 from utils import log
 
+log.add_logging_level("FOLLOW", 25)
+log.add_logging_level("UNFOLLOW", 26)
 logger = log.get_logger()
 
 try:
@@ -30,7 +32,7 @@ while True:
         sucesso = actions.follow(bot, contas_desejadas)
         if sucesso:
             retentativas_follow = 1
-            logger.warning(f"Ação FOLLOW finalizada com sucesso na {counter}ª iteração.")
+            logger.follow(f"Ação FOLLOW finalizada com sucesso na {counter}ª iteração.")
         else:
             if retentativas_follow < 2:
                 retentativas_follow += 1
@@ -44,7 +46,7 @@ while True:
         sucesso = actions.unfollow(bot)
         if sucesso:
             retentativas_unfollow = 1
-            logger.warning(f"Ação UNFOLLOW finalizada com sucesso na {counter}ª iteração.")
+            logger.unfollow(f"Ação UNFOLLOW finalizada com sucesso na {counter}ª iteração.")
         else:
             if retentativas_unfollow < 2:
                 retentativas_unfollow += 1
