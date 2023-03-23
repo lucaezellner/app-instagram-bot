@@ -3,6 +3,9 @@ from utils import actions
 import os
 import glob
 from utils import log
+from dotenv import load_dotenv
+
+load_dotenv()
 
 log.add_logging_level("FOLLOW", 25)
 log.add_logging_level("UNFOLLOW", 26)
@@ -16,8 +19,7 @@ except Exception as e:
 
 bot = InstagramBot(max_follows_per_day=200, max_unfollows_per_day=600)
 
-# bot.login(username=os.environ['username'], password=os.environ['password'])
-bot.login(username="lucaotdr", password="Aculuketa@992710916.")
+bot.login(username=os.environ['username'], password=os.environ['password'])
 contas_desejadas = ["eusoupaulinholima", "rodrigocohenoficial", "rafaelhaguiwara"]
 
 counter = 1
