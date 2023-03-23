@@ -58,9 +58,11 @@ def follow(bot, contas_desejadas):
             db_followers.update_user_status(seguidor_escolhido[0], 2)
             return True
         else:
+            logger.info(f"A lista de seguidores pendentes está vazia... Buscando novos nas contas {str(contas_desejadas)}")
             success = inserir_pendentes_db(bot, contas_desejadas, 50)
             if not success:
                 return False
+            return True
     except Exception as e:
         logger.error(f"Erro ao executar o processo: {e}")
         return False
@@ -81,6 +83,9 @@ def unfollow(bot):
                 return False
             logger.warning(f"Seguidor {seguidor_escolhido[1]} deixado de ser seguido com sucesso!")
             db_followers.update_user_status(seguidor_escolhido[0], 3)
+            return True
+        else:
+            logger.info("Não resta ninguém para deixar de seguir.")
             return True
     except Exception as e:
         logger.error(f"Erro ao executar o processo: {e}")
