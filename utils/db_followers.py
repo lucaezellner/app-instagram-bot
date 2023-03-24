@@ -2,8 +2,9 @@ import sqlite3
 from datetime import datetime
 from utils import log
 
-if __name__ == "__main__":
-    logger = log.get_logger()
+log.add_logging_level("FOLLOW", 25)
+log.add_logging_level("UNFOLLOW", 26)
+logger = log.get_logger()
 
 
 def executar_query(query):

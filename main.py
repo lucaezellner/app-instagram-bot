@@ -19,7 +19,7 @@ except Exception as e:
 
 bot = InstagramBot(max_follows_per_day=200, max_unfollows_per_day=600)
 
-bot.login(username=os.environ['username'], password=os.environ['password'])
+bot.login(username=os.environ['usuario'], password=os.environ['senha'])
 contas_desejadas = ["eusoupaulinholima", "rodrigocohenoficial", "rafaelhaguiwara"]
 
 counter = 1
