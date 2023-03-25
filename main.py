@@ -20,7 +20,7 @@ except Exception as e:
 bot = InstagramBot(max_follows_per_day=200, max_unfollows_per_day=600)
 
 bot.login(username=os.environ['usuario'], password=os.environ['senha'])
-contas_desejadas = ["eusoupaulinholima", "rodrigocohenoficial", "rafaelhaguiwara"]
+contas_desejadas = ["eusoupaulinholima", "rodrigocohenoficial", "rafaelhaguiwara", "ottogsparenberg"]
 
 counter = 1
 keep_following = True
@@ -30,7 +30,7 @@ retentativas_unfollow = 1
 while True:
     bot.print_counters()
     # AÇÃO FOLLOW
-    if keep_following and (counter % 2 == 0):
+    if keep_following:
         sucesso = actions.follow(bot, contas_desejadas)
         if sucesso:
             retentativas_follow = 1
