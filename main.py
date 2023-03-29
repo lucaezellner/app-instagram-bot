@@ -6,6 +6,9 @@ from instagrapi import Client
 from utils import actions
 from utils import log
 
+# Necessário para cores de logs no terminal
+os.system("")
+
 load_dotenv()
 
 log.add_logging_level("FOLLOW", 25)
