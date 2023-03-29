@@ -9,21 +9,21 @@ logger = log.get_logger()
 
 
 def inserir_pendentes_db(bot, contas_desejadas, qtd_seguidores_por_conta):
-    todos_seguidores = []
-    for conta in contas_desejadas:
-        seguidores_conta = bot.get_user_followers(conta, qtd_seguidores_por_conta)
-        todos_seguidores.extend(seguidores_conta)
-    insert_novos = []
-    for novo in todos_seguidores:
-        username = bot.get_username_from_user_id(novo)
-        if username is None:
-            logger.error("Algo deu errado na funcao inserir_pendentes_db ao obter o nome de usuário. Melhor parar.")
-            return False
-        user = (novo, username, datetime.now(), 1)
-        logger.info(f"Novo pendente a ser inserido no banco: {user}")
-        insert_novos.append(user)
-    db_followers.insert_many_users(insert_novos)
-    return True
+    try:
+        for conta in contas_desejadas:
+            seguidores_conta = bot.user_followers(user_id=bot.user_id_from_username(conta), amount=qtd_seguidores_por_conta)
+            insert_novos = []
+            for novo_usuario in seguidores_conta:
+                username = seguidores_conta[novo_usuario].username
+                user = (novo_usuario, username, datetime.now(), 1)
+                logger.info(f"Novo pendente a ser inserido no banco: {user}")
+                insert_novos.append(user)
+            db_followers.insert_many_users(insert_novos)
+            logger.follow(f"Seguidores da conta '{conta}' inseridos no banco de dados com sucesso.")
+        return True
+    except Exception as e:
+        logger.error(f"Erro ao inserir usuários pendentes para seguir: {e}")
+        return False
 
 
 def buscar_usuarios_pendentes_para_seguir():
@@ -36,7 +36,7 @@ def buscar_usuarios_pendentes_para_deixar_de_seguir():
     sql = '''
         SELECT USER_ID, USER_NAME, ULTIMA_ATUALIZACAO
         FROM users WHERE STATUS = 2
-        AND ULTIMA_ATUALIZACAO < DATE('now', '-1 day', 'localtime')
+        AND ULTIMA_ATUALIZACAO < DATE('now', 'localtime')
         ORDER BY ULTIMA_ATUALIZACAO
     '''
     ret = db_followers.executar_select(sql)
@@ -51,11 +51,7 @@ def follow(bot, contas_desejadas):
         if len(pendentes) > 0:
             seguidor_escolhido = random.choice(pendentes)
             logger.info(f"Seguindo seguidor: {seguidor_escolhido[1]}")
-            sucesso = bot.follow(seguidor_escolhido[0])
-            if not sucesso:
-                db_followers.update_user_status(seguidor_escolhido[0], 4)
-                logger.error(f"Erro no FOLLOW de {seguidor_escolhido[1]}. Status do seguidor alterado para ERROR.")
-                return False
+            bot.user_follow(seguidor_escolhido[0])
             logger.follow(f"Seguidor {seguidor_escolhido[1]} seguido com sucesso!")
             db_followers.update_user_status(seguidor_escolhido[0], 2)
             return True
@@ -66,6 +62,8 @@ def follow(bot, contas_desejadas):
                 return False
             return True
     except Exception as e:
+        db_followers.update_user_status(seguidor_escolhido[0], 4)
+        logger.error(f"Erro no FOLLOW de {seguidor_escolhido[1]}. Status do seguidor alterado para ERROR.")
         logger.error(f"Erro ao executar o processo: {e}")
         return False
 
@@ -78,7 +76,7 @@ def unfollow(bot):
         if len(pendentes) > 0:
             seguidor_escolhido = pendentes[0]
             logger.info(f"Deixando de seguir: {seguidor_escolhido[1]}. Havia sido seguido em {seguidor_escolhido[2]}")
-            sucesso = bot.unfollow(seguidor_escolhido[0])
+            sucesso = bot.user_unfollow(seguidor_escolhido[0])
             if not sucesso:
                 db_followers.update_user_status(seguidor_escolhido[0], 4)
                 logger.error(f"Erro no UNFOLLOW de {seguidor_escolhido[1]}. Status do seguidor alterado para ERROR.")
