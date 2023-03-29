@@ -5,28 +5,36 @@ from dotenv import load_dotenv
 from instagrapi import Client
 from utils import actions
 from utils import log
+import atexit
 
+load_dotenv()
 
 RETENTATIVAS = 3
+USERNAME = os.environ['usuario']
+PASSWORD = os.environ['senha']
 # Necessário para cores de logs no terminal
 os.system("")
-load_dotenv()
 
 log.add_logging_level("FOLLOW", 25)
 log.add_logging_level("UNFOLLOW", 26)
 logger = log.get_logger()
 
 bot = Client()
+bot.set_locale("pt_BR")
+bot.set_country("BRA")
+bot.set_country_code(55)
+bot.set_timezone_offset(-3 * 60 * 60)
 
-try:
-    logger.info("Tentando obter sessão ativa para login.")
-    bot.load_settings('session.json')
-    logger.info("Sessão obtida com sucesso.")
-except Exception as e:
-    logger.warning(f"Erro ao carregar sessão: {e}")
+
+@atexit.register
+def logout():
+    logger.info("Finalizando programa. Logout iniciado!")
+    bot.logout()
+    logger.info("Logout concluído.")
+
 
 logger.info("Iniciando login...")
-bot.login(username=os.environ['usuario'], password=os.environ['senha'])
+bot.login(username=USERNAME, password=PASSWORD)
 bot.dump_settings('session.json')
 logger.info("Login realizado com sucesso!")
 

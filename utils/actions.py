@@ -2,6 +2,7 @@ from utils import db_followers
 from datetime import datetime
 import random
 from utils import log
+from instagrapi.exceptions import LoginRequired
 
 log.add_logging_level("FOLLOW", 25)
 log.add_logging_level("UNFOLLOW", 26)
@@ -60,8 +61,13 @@ def follow(bot, contas_desejadas):
             logger.info(f"A lista de seguidores pendentes está vazia... Buscando novos nas contas {str(contas_desejadas)}")
             success = inserir_pendentes_db(bot, contas_desejadas, 50)
             if not success:
-                return False
+                return {"sucesso": False, "msg": "erro"}
             return True
+    except LoginRequired as e:
+        logger.warning(f"Erro na ação FOLLOW. {e}. Realizando novo login...")
+        bot.relogin()
+        logger.info("Relogin realizado com sucesso!")
+        return False
     except Exception as e:
         db_followers.update_user_status(seguidor_escolhido[0], 4)
         logger.error(f"Erro no FOLLOW de {seguidor_escolhido[1]}. Status do seguidor alterado para ERROR.")
@@ -89,6 +95,11 @@ def unfollow(bot):
         else:
             logger.info("Não resta ninguém para deixar de seguir.")
             return True
+    except LoginRequired as e:
+        logger.warning(f"Erro na ação UNFOLLOW. {e}. Realizando novo login...")
+        bot.relogin()
+        logger.info("Relogin realizado com sucesso!")
+        return False
     except Exception as e:
         db_followers.update_user_status(seguidor_escolhido[0], 4)
         logger.error(f"Erro no FOLLOW de {seguidor_escolhido[1]}. Status do seguidor alterado para ERROR.")
