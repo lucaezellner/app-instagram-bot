@@ -5,3 +5,4 @@ followers.db
 __pycache__
 ExecutarRobo.bat
 .env
+session.json

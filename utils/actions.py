@@ -44,6 +44,7 @@ def buscar_usuarios_pendentes_para_deixar_de_seguir():
 
 
 def follow(bot, contas_desejadas):
+    seguidor_escolhido = (None, None)
     try:
         logger.info("Iniciando ação FOLLOW")
         pendentes = buscar_usuarios_pendentes_para_seguir()
@@ -69,6 +70,7 @@ def follow(bot, contas_desejadas):
 
 
 def unfollow(bot):
+    seguidor_escolhido = (None, None)
     try:
         logger.info("Iniciando ação UNFOLLOW")
         pendentes = buscar_usuarios_pendentes_para_deixar_de_seguir()
@@ -88,5 +90,7 @@ def unfollow(bot):
             logger.info("Não resta ninguém para deixar de seguir.")
             return True
     except Exception as e:
+        db_followers.update_user_status(seguidor_escolhido[0], 4)
+        logger.error(f"Erro no FOLLOW de {seguidor_escolhido[1]}. Status do seguidor alterado para ERROR.")
         logger.error(f"Erro ao executar o processo: {e}")
         return False
