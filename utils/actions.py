@@ -2,7 +2,9 @@ from utils import db_followers
 from datetime import datetime
 import random
 from utils import log
-from instagrapi.exceptions import LoginRequired
+from instagrapi.exceptions import (LoginRequired,
+    ChallengeRequired,  RecaptchaChallengeForm,
+    FeedbackRequired, PleaseWaitFewMinutes)
 
 log.add_logging_level("FOLLOW", 25)
 log.add_logging_level("UNFOLLOW", 26)
@@ -56,23 +58,26 @@ def follow(bot, contas_desejadas):
             bot.user_follow(seguidor_escolhido[0])
             logger.follow(f"Seguidor {seguidor_escolhido[1]} seguido com sucesso!")
             db_followers.update_user_status(seguidor_escolhido[0], 2)
-            return True
+            return {"sucesso": True, "continuar": True}
         else:
             logger.info(f"A lista de seguidores pendentes está vazia... Buscando novos nas contas {str(contas_desejadas)}")
             success = inserir_pendentes_db(bot, contas_desejadas, 50)
             if not success:
-                return {"sucesso": False, "msg": "erro"}
-            return True
+                return {"sucesso": False, "continuar": True}
+            return {"sucesso": True, "continuar": True}
+    except (ChallengeRequired, RecaptchaChallengeForm, FeedbackRequired, PleaseWaitFewMinutes) as e:
+        logger.critical(f"Erro na ação FOLLOW. {e}. Instagram não permitiu a ação.")
+        return {"sucesso": False, "continuar": False}
     except LoginRequired as e:
         logger.warning(f"Erro na ação FOLLOW. {e}. Realizando novo login...")
         bot.relogin()
         logger.info("Relogin realizado com sucesso!")
-        return False
+        return {"sucesso": False, "continuar": True}
     except Exception as e:
         db_followers.update_user_status(seguidor_escolhido[0], 4)
         logger.error(f"Erro no FOLLOW de {seguidor_escolhido[1]}. Status do seguidor alterado para ERROR.")
         logger.error(f"Erro ao executar o processo: {e}")
-        return False
+        return {"sucesso": False, "continuar": True}
 
 
 def unfollow(bot):
@@ -88,20 +93,23 @@ def unfollow(bot):
             if not sucesso:
                 db_followers.update_user_status(seguidor_escolhido[0], 4)
                 logger.error(f"Erro no UNFOLLOW de {seguidor_escolhido[1]}. Status do seguidor alterado para ERROR.")
-                return False
+                return {"sucesso": False, "continuar": True}
             logger.unfollow(f"Seguidor {seguidor_escolhido[1]} deixado de ser seguido com sucesso!")
             db_followers.update_user_status(seguidor_escolhido[0], 3)
-            return True
+            return {"sucesso": True, "continuar": True}
         else:
             logger.info("Não resta ninguém para deixar de seguir.")
-            return True
+            return {"sucesso": True, "continuar": True}
+    except (ChallengeRequired, RecaptchaChallengeForm, FeedbackRequired, PleaseWaitFewMinutes) as e:
+        logger.critical(f"Erro na ação FOLLOW. {e}. Instagram não permitiu a ação.")
+        return {"sucesso": False, "continuar": False}
     except LoginRequired as e:
         logger.warning(f"Erro na ação UNFOLLOW. {e}. Realizando novo login...")
         bot.relogin()
         logger.info("Relogin realizado com sucesso!")
-        return False
+        return {"sucesso": False, "continuar": True}
     except Exception as e:
         db_followers.update_user_status(seguidor_escolhido[0], 4)
-        logger.error(f"Erro no FOLLOW de {seguidor_escolhido[1]}. Status do seguidor alterado para ERROR.")
+        logger.error(f"Erro no UNFOLLOW de {seguidor_escolhido[1]}. Status do seguidor alterado para ERROR.")
         logger.error(f"Erro ao executar o processo: {e}")
-        return False
+        return {"sucesso": False, "continuar": True}
