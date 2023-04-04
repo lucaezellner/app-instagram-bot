@@ -1,12 +1,11 @@
 import os
 import random
-import time
 from pathlib import Path
 from dotenv import load_dotenv
 from instagrapi import Client
-from instagrapi.exceptions import LoginRequired
 from utils import actions
 from utils import log
+from utils.actions import verificar_login, dormir
 
 load_dotenv()
 
@@ -45,26 +44,9 @@ try:
 except Exception as e:
     logger.warning(f"Erro ao ler arquivo de sessão de login. {e}")
 
-
-def dormir(delay):
-    m, s = divmod(delay, 60)
-    logger.info(f"Irá dormir por {m:02d}:{s:02d}.")
-    time.sleep(delay)
-
-
 logger.info("Iniciando login...")
 bot.login(username=USERNAME, password=PASSWORD)
-try:
-    bot_account = bot.account_info()
-except LoginRequired:
-    try:
-        logger.info("Realizando relogin.")
-        bot.relogin()
-        logger.info("Relogin realizado com sucesso.")
-    except Exception as e:
-        logger.exception(f"Erro ao realizar relogin. {e}")
-        exit()
-bot.dump_settings(PATH_SESSION)
+verificar_login(bot, PATH_SESSION)
 logger.info("Login realizado com sucesso!")
 
 contas_desejadas = ["eusoupaulinholima", "rodrigocohenoficial", "rafaelhaguiwara", "ottogsparenberg"]
@@ -76,6 +58,10 @@ retentativas_follow = 1
 retentativas_unfollow = 1
 while True:
     # AÇÃO FOLLOW
+    sucesso_login = verificar_login(bot, PATH_SESSION, 20)
+    if not sucesso_login:
+        keep_following = False
+        keep_unfollowing = False
     if keep_following:
         status_action = actions.follow(bot, contas_desejadas)
         if status_action["sucesso"]:
@@ -95,6 +81,10 @@ while True:
                 logger.critical(f"Desligando FOLLOW.")
 
     # AÇÃO UNFOLLOW
+    sucesso_login = verificar_login(bot, PATH_SESSION, 20)
+    if not sucesso_login:
+        keep_following = False
+        keep_unfollowing = False
     if keep_unfollowing:
         status_action = actions.unfollow(bot)
         if status_action["sucesso"]:

@@ -1,6 +1,6 @@
 import random
 from datetime import datetime
-from pathlib import Path
+import time
 
 from instagrapi.exceptions import (LoginRequired,
                                    ChallengeRequired, RecaptchaChallengeForm,
@@ -12,6 +12,31 @@ from utils import log
 log.add_logging_level("FOLLOW", 25)
 log.add_logging_level("UNFOLLOW", 26)
 logger = log.get_logger()
+
+
+def dormir(delay):
+    m, s = divmod(delay, 60)
+    logger.info(f"Irá dormir por {m:02d}:{s:02d}.")
+    time.sleep(delay)
+
+
+def verificar_login(bot, path_dump_settings, delay_minutos=0):
+    try:
+        bot.account_info()
+    except LoginRequired as lr:
+        logger.info(f"Login expirado: {lr}.")
+        logger.warning(f"Irá dormir por {delay_minutos} minutos.")
+        time.sleep(delay_minutos*60)
+        try:
+            logger.info("Realizando relogin.")
+            bot.relogin()
+            logger.info("Relogin realizado com sucesso.")
+            return True
+        except Exception as e:
+            logger.exception(f"Erro ao realizar relogin. {e}")
+            return False
+    bot.dump_settings(path_dump_settings)
+    return True
 
 
 def inserir_pendentes_db(bot, contas_desejadas, qtd_seguidores_por_conta):
@@ -71,22 +96,11 @@ def follow(bot, contas_desejadas):
     except (ChallengeRequired, RecaptchaChallengeForm, FeedbackRequired, PleaseWaitFewMinutes) as e:
         logger.critical(f"Erro na ação FOLLOW. {e}. Instagram não permitiu a ação.")
         return {"sucesso": False, "continuar": False}
-    except LoginRequired as e:
-        logger.warning(f"Erro na ação FOLLOW. {e}. Realizando novo login...")
-        try:
-            bot.relogin()
-            session_path = Path(__file__).parent.parent
-            bot.dump_settings(Path(session_path, "session.json"))
-            logger.info("Relogin realizado com sucesso!")
-            return {"sucesso": False, "continuar": True}
-        except Exception as e:
-            logger.exception(f"Erro ao realizar relogin. {e}")
-            return {"sucesso": False, "continuar": False}
     except Exception as e:
         db_followers.update_user_status(seguidor_escolhido[0], 4)
         logger.error(f"Erro no FOLLOW de {seguidor_escolhido[1]}. Status do seguidor alterado para ERROR.")
         logger.error(f"Erro ao executar o processo: {e}")
-        return {"sucesso": False, "continuar": False}
+        return {"sucesso": False, "continuar": True}
 
 
 def unfollow(bot):
@@ -112,19 +126,8 @@ def unfollow(bot):
     except (ChallengeRequired, RecaptchaChallengeForm, FeedbackRequired, PleaseWaitFewMinutes) as e:
         logger.critical(f"Erro na ação FOLLOW. {e}. Instagram não permitiu a ação.")
         return {"sucesso": False, "continuar": False}
-    except LoginRequired as e:
-        logger.warning(f"Erro na ação UNFOLLOW. {e}. Realizando novo login...")
-        try:
-            bot.relogin()
-            session_path = Path(__file__).parent.parent
-            bot.dump_settings(Path(session_path, "session.json"))
-            logger.info("Relogin realizado com sucesso!")
-            return {"sucesso": False, "continuar": True}
-        except Exception as e:
-            logger.exception(f"Erro ao realizar relogin. {e}")
-            return {"sucesso": False, "continuar": False}
     except Exception as e:
         db_followers.update_user_status(seguidor_escolhido[0], 4)
         logger.error(f"Erro no UNFOLLOW de {seguidor_escolhido[1]}. Status do seguidor alterado para ERROR.")
         logger.error(f"Erro ao executar o processo: {e}")
-        return {"sucesso": False, "continuar": False}
+        return {"sucesso": False, "continuar": True}
