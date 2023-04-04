@@ -1,10 +1,13 @@
-from utils import db_followers
-from datetime import datetime
 import random
-from utils import log
+from datetime import datetime
+from pathlib import Path
+
 from instagrapi.exceptions import (LoginRequired,
-    ChallengeRequired,  RecaptchaChallengeForm,
-    FeedbackRequired, PleaseWaitFewMinutes)
+                                   ChallengeRequired, RecaptchaChallengeForm,
+                                   FeedbackRequired, PleaseWaitFewMinutes)
+
+from utils import db_followers
+from utils import log
 
 log.add_logging_level("FOLLOW", 25)
 log.add_logging_level("UNFOLLOW", 26)
@@ -70,14 +73,20 @@ def follow(bot, contas_desejadas):
         return {"sucesso": False, "continuar": False}
     except LoginRequired as e:
         logger.warning(f"Erro na ação FOLLOW. {e}. Realizando novo login...")
-        bot.relogin()
-        logger.info("Relogin realizado com sucesso!")
-        return {"sucesso": False, "continuar": True}
+        try:
+            bot.relogin()
+            session_path = Path(__file__).parent.parent
+            bot.dump_settings(Path(session_path, "session.json"))
+            logger.info("Relogin realizado com sucesso!")
+            return {"sucesso": False, "continuar": True}
+        except Exception as e:
+            logger.exception(f"Erro ao realizar relogin. {e}")
+            return {"sucesso": False, "continuar": False}
     except Exception as e:
         db_followers.update_user_status(seguidor_escolhido[0], 4)
         logger.error(f"Erro no FOLLOW de {seguidor_escolhido[1]}. Status do seguidor alterado para ERROR.")
         logger.error(f"Erro ao executar o processo: {e}")
-        return {"sucesso": False, "continuar": True}
+        return {"sucesso": False, "continuar": False}
 
 
 def unfollow(bot):
@@ -105,11 +114,17 @@ def unfollow(bot):
         return {"sucesso": False, "continuar": False}
     except LoginRequired as e:
         logger.warning(f"Erro na ação UNFOLLOW. {e}. Realizando novo login...")
-        bot.relogin()
-        logger.info("Relogin realizado com sucesso!")
-        return {"sucesso": False, "continuar": True}
+        try:
+            bot.relogin()
+            session_path = Path(__file__).parent.parent
+            bot.dump_settings(Path(session_path, "session.json"))
+            logger.info("Relogin realizado com sucesso!")
+            return {"sucesso": False, "continuar": True}
+        except Exception as e:
+            logger.exception(f"Erro ao realizar relogin. {e}")
+            return {"sucesso": False, "continuar": False}
     except Exception as e:
         db_followers.update_user_status(seguidor_escolhido[0], 4)
         logger.error(f"Erro no UNFOLLOW de {seguidor_escolhido[1]}. Status do seguidor alterado para ERROR.")
         logger.error(f"Erro ao executar o processo: {e}")
-        return {"sucesso": False, "continuar": True}
+        return {"sucesso": False, "continuar": False}
