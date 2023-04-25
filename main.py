@@ -41,6 +41,7 @@ bot.set_timezone_offset(-3 * 60 * 60)
 
 try:
     bot.load_settings(PATH_SESSION)
+    logger.info("Arquivo de sessão carregado com sucesso!")
 except Exception as e:
     logger.warning(f"Erro ao ler arquivo de sessão de login. {e}")
 
@@ -49,7 +50,7 @@ bot.login(username=USERNAME, password=PASSWORD)
 verificar_login(bot, PATH_SESSION)
 logger.info("Login realizado com sucesso!")
 
-contas_desejadas = ["eusoupaulinholima", "rodrigocohenoficial", "rafaelhaguiwara", "ottogsparenberg"]
+contas_desejadas = ["eusoupaulinholima", "rodrigocohenoficial", "rafaelhaguiwara", "gorilakingtrader"]
 
 counter = 1
 keep_following = True
@@ -80,6 +81,8 @@ while True:
                 keep_following = False
                 logger.critical(f"Desligando FOLLOW.")
 
+    dormir(random.randint(60, 120))
+
     # AÇÃO UNFOLLOW
     sucesso_login = verificar_login(bot, PATH_SESSION, 20)
     if not sucesso_login:
@@ -103,7 +106,7 @@ while True:
                 keep_unfollowing = False
                 logger.critical(f"Desligando UNFOLLOW.")
 
-    dormir(random.randint(150, 300))
+    dormir(random.randint(180, 300))
 
     # CASO CRITICO DE ERROS
     if not keep_following and not keep_unfollowing:
