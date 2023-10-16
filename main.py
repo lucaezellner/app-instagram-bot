@@ -50,7 +50,8 @@ bot.login(username=USERNAME, password=PASSWORD)
 verificar_login(bot, PATH_SESSION)
 logger.info("Login realizado com sucesso!")
 
-contas_desejadas = ["eusoupaulinholima", "rodrigocohenoficial", "rafaelhaguiwara", "gorilakingtrader"]
+contas_desejadas = ["eusoupaulinholima", "rodrigocohenoficial", "rafaelhaguiwara", "gorilakingtrader", "ojosuemendes",
+                    "luizinvon", "roneyalbert_frajola", "lorenzfabricio", "papo_de_sardinha"]
 
 counter = 1
 keep_following = True
@@ -81,7 +82,7 @@ while True:
                 keep_following = False
                 logger.critical(f"Desligando FOLLOW.")
 
-    dormir(random.randint(60, 120))
+    dormir(random.randint(100, 300))
 
     # AÇÃO UNFOLLOW
     sucesso_login = verificar_login(bot, PATH_SESSION, 20)
@@ -106,7 +107,7 @@ while True:
                 keep_unfollowing = False
                 logger.critical(f"Desligando UNFOLLOW.")
 
-    dormir(random.randint(180, 300))
+    dormir(random.randint(150, 400))
 
     # CASO CRITICO DE ERROS
     if not keep_following and not keep_unfollowing:
